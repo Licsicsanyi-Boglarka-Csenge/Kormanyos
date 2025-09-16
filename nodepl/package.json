@@ -1,0 +1,19 @@
+{
+  "name": "nodepl",
+  "version": "1.0.0",
+  "description": "Első szerver",
+  "main": "app.js",
+  "types": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "Licsicsányi Boglárka Csenge",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="bejelentkezes.js" defer></script>
+  <link rel="stylesheet" href="bejelentkezes.css">
+  <title>Bejelentkezés</title>
+</head>
+
+<body>
+  <div id="form">
+    <button id="ValasztReg">Regisztráció</button>
+    <button id="ValasztBe">Bejelentkezés</button>
+    <h1></h1>
+    <div id="DivBe" hidden>
+      <fieldset>
+        <legend>Add meg az adatokat!</legend>
+        <p id="BeHiba"></p>
+        <label>Email: </label><br />
+        <input type="email" id="BeEmail" placeholder="kis.anna@gmail.com" /><br />
+        <label>Jelszó: </label><br />
+        <input type="password" id="BeJelszo" /><br><br>
+        <button id="Be">Bejelentkezés</button>
+      </fieldset>
+    </div>
+    <div id="DivReg" hidden>
+      <fieldset>
+        <legend>Add meg az adatokat!</legend>
+        <p id="RegHiba"></p>
+        <label>Email: </label><br />
+        <input type="email" id="RegEmail" placeholder="kis.anna@gmail.com" /><br />
+        <label>Jelszó: </label><br />
+        <input type="password" id="RegJelszo1" /><br />
+        <label>Jelszó ismétlése: </label><br />
+        <input type="password" id="RegJelszo2" /><br /><br />
+        <button id="Reg">Regisztráció</button>
+      </fieldset>
+    </div>
+  </div>
+</body>
+
+</html>

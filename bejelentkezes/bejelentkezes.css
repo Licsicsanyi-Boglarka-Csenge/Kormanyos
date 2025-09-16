@@ -1,0 +1,44 @@
+body {
+  background-color: rgb(232, 232, 232);
+}
+
+input {
+  margin-bottom: 3%;
+}
+
+#form {
+  margin: auto;
+  margin-top: 5%;
+  border: 1px rgb(0, 130, 67) solid;
+  box-shadow: inset -3px -3px rgb(0, 96, 50);
+  border-radius: 15px;
+  padding: 2%;
+  width: 30%;
+  text-align: center;
+  background-color: #fff;
+  font-size: 110%;
+}
+
+
+label,
+fieldset,
+h1 {
+  font-weight: bold;
+  color: rgb(0, 96, 50);
+}
+
+#BeHiba,
+#RegHiba {
+  color: red;
+}
+
+button {
+  margin: 5px 5px 5px 5px;
+  padding: 1%;
+  background-color: rgb(0, 130, 67);
+  color: #fff;
+  border-color: rgb(1, 160, 83);
+  border-radius: 20px;
+  font-size: 90%;
+  font-weight: bold;
+}
