@@ -15,13 +15,17 @@ app.listen(PORT, () => {
   console.log(`Server runs on http://localhost: ${PORT}`);
 });
 
+app.get("/books", (req, res) => {
+  res.status(200).json(books);
+});
+
 app.get("/books/:id", (req, res) => {
   const id = req.params.id;
   const book = books.find((book) => book.id === id);
   res.status(200).json(book);
 });
 
-app.post("/books/:id", (req, res) => {
+app.post("/books", (req, res) => {
   const { author, title } = req.body;
   if (!author || !title) res.status(400).json({ message: "Missing data!" });
 
