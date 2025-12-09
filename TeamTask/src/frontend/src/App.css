@@ -4,7 +4,17 @@
   padding: 2rem;
   text-align: center;
 }
+body {
+  background-color: rgb(14, 32, 44);
+}
+.container{
+  width: 100%;
+  padding: 0;
+}
 
+h1{
+  color: white;
+}
 
 .read-the-docs {
   color: #888;

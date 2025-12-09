@@ -1,94 +1,149 @@
 import { useState } from "react";
+import { Route, useNavigate } from "react-router-dom";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import type { User } from "../types/user";
 import apiClient from "../api/apiClient";
-import { useNavigate } from "react-router-dom";
-import {
-  emailValidation,
-  passwordValidation,
-} from "../components/validation.ts";
+import { emailValidation, passwordValidation } from "../components/validation";
+import "./Register.css";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirm, setConfirm] = useState<string>("");
-  const [nameError, setNameError] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
-  const [confirmError, setConfirmError] = useState<string>("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
+  const [validated, setValidated] = useState(false);
 
-  const onSubmit = () => {
-    setNameError(!name ? "A név nem lehet üres!" : "");
-    setConfirmError(!confirm ? "A jelszót meg kell ismételni!" : "");
-    setEmailError(emailValidation(email));
-    setPasswordError(passwordValidation(password, confirm));
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
-    if (nameError || emailError || passwordError) {
-      return;
-    }
+    const nameErr = !name ? "A név nem lehet üres!" : "";
+    const emailErr = emailValidation(email);
+    const passwordErr = passwordValidation(password, confirm);
+    const confirmErr = !confirm ? "A jelszót meg kell ismételni!" : "";
 
-    const u: User = {
-      name,
-      email,
-      password,
-    };
+    setNameError(nameErr);
+    setEmailError(emailErr);
+    setPasswordError(passwordErr);
+    setConfirmError(confirmErr);
+
+    if (nameErr || emailErr || passwordErr || confirmErr) return;
+    const u: User = { name, email, password };
 
     apiClient
       .post("/users/register", u)
-      .then((response) => alert(response.status))
-      .catch((result) => console.error(result));
+      .then(() => toast.success("A regisztráció sikeres volt!"))
+      .catch(() => toast.error("Hiba történt a regisztráció során."));
 
     apiClient
       .post("/users/search", { email })
-      .then((response) => navigate(`/home/${response.data.id}`))
-      .catch((result) => console.log(result));
+      .then((res) => navigate(`/home/${res.data.id}`))
+      .catch(() => toast.error("Hiba történt az oldal betöltése közben."));
   };
 
   return (
-    <>
-      <div>
-        <button onClick={() => navigate("/")}>Login</button>
-        <h1>Regisztáció</h1>
-        <label htmlFor="name">Név:</label>
-        <input
-          name="name"
-          type="text"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <p>{nameError}</p>
-        <br />
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={onSubmit}
+        className="register-form"
+      >
+        <Row className="me-3">
+            <Button
+              className="button reg-button w-100  mb-3"
+              onClick={() => navigate("/")}
+            >
+              Bejelentkezés
+            </Button>
+        </Row>
 
-        <label htmlFor="email">Email:</label>
-        <input
-          name="email"
-          type="email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <p>{emailError}</p>
-        <br />
+        <h1 className="mb-4 text-center">Regisztráció</h1>
+        <Row>
+          <Form.Group className="mb-3">
+            <Form.Label>Név</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Írja be a nevét"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setNameError(!e.target.value ? "A név nem lehet üres!" : "");
+              }}
+              isInvalid={!!nameError}
+            />
+            <Form.Control.Feedback type="invalid">
+              {nameError}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Row>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="email"
+              placeholder="Írja be az email címét"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(emailValidation(e.target.value));
+              }}
+              isInvalid={!!emailError}
+            />
+            <Form.Control.Feedback type="invalid">
+              {emailError}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
 
-        <label htmlFor="password">Jelszó:</label>
-        <input
-          name="password"
-          type="text"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <p>{passwordError}</p>
-        <br />
+        <Row>
+          <Form.Group className="mb-3">
+            <Form.Label>Jelszó</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Írja be a jelszót"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordError(passwordValidation(e.target.value, confirm));
+              }}
+              isInvalid={!!passwordError}
+            />
+            <Form.Control.Feedback type="invalid">
+              {passwordError}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
 
-        <label htmlFor="passwordAgain">Jelszó ismétlése:</label>
-        <input
-          name="passwordAgain"
-          type="text"
-          onChange={(e) => setConfirm(e.target.value)}
-        />
-        <p>{confirmError}</p>
-        <br />
-
-        <button onClick={onSubmit}>Regisztráció</button>
-      </div>
-    </>
+        <Row>
+          <Form.Group className="mb-4">
+            <Form.Label>Jelszó ismétlése</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Ismételje meg a jelszót"
+              value={confirm}
+              onChange={(e) => {
+                setConfirm(e.target.value);
+                setConfirmError(
+                  !e.target.value ? "A jelszót meg kell ismételni!" : ""
+                );
+              }}
+              isInvalid={!!confirmError}
+            />
+            <Form.Control.Feedback type="invalid">
+              {confirmError}
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Row>
+        <Button type="submit" className="button reg-button mx-auto mt-3">
+          Regisztráció
+        </Button>
+      </Form>
   );
 };
+
 export default Register;

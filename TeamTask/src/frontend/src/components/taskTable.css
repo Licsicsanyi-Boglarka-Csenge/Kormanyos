@@ -1,0 +1,41 @@
+.table {
+  border: 2px solid white;
+  border-collapse: collapse;
+  margin: 3 auto;
+}
+
+.table tbody {  
+  display: block;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.table thead,
+.table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table th {
+  background-color: rgb(35, 76, 106);
+  color: white;
+  border-bottom: 1px solid white;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.table td {
+  color: rgb(35, 76, 106);
+  background-color: rgb(212, 229, 241);
+  font-size: 1rem;
+}
+
+.overdue td {
+  color: red !important;
+}
+
+.completed td {
+  color: rgb(27, 60, 83) !important;
+  opacity: 0.7;
+}

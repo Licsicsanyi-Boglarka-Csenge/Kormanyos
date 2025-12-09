@@ -56,23 +56,20 @@ export const saveTask = (req, res) => {
 };
 
 export const updateTask = (req, res) => {
-  const id = +req.params.id;
+  const id = Number(req.params.id);
   let task = Tasks.getTasksById(id);
+
   if (!task) {
     return res.status(404).json({ message: "Task not found!" });
   }
+
   const { title, description, due_date, project_id, assignee_id, status } =
     req.body;
-  if (
-    !title ||
-    !description ||
-    !due_date ||
-    !project_id ||
-    assignee_id ||
-    status
-  ) {
+
+  if (project_id === undefined || assignee_id === undefined) {
     return res.status(400).json({ message: "Missing data!" });
   }
+
   Tasks.updateTask(
     id,
     project_id,
@@ -82,10 +79,23 @@ export const updateTask = (req, res) => {
     status || task.status,
     due_date || task.due_date
   );
-  task = Tasks.getTaskById(id);
+
+  task = Tasks.getTasksById(id);
   res.json(task);
 };
 
+export const updateStatus = (req, res) => {
+  const id = +req.params.id;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Missing status!" });
+  }
+
+  Tasks.updateStatus(id, status);
+  const updatedTask = Tasks.getTasksById(id);
+  res.json(updatedTask);
+};
 export const deleteTask = (req, res) => {
   const id = +req.params.id;
   const task = Tasks.getTasksById(id);

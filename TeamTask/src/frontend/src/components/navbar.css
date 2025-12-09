@@ -1,0 +1,70 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1030;
+  background-color: rgb(27, 60, 83);
+  color: white;
+}
+
+.navbar .navbar-brand {
+  color: white;
+}
+
+.navbar .navbar-toggler {
+  border: 1px solid white;
+}
+
+.offcanvas {
+  background-color: rgb(35, 76, 106);
+  color: white;
+  font-size: 1.2em;
+}
+
+.offcanvas {
+  background-color: rgb(35, 76, 106);
+  color: white;
+  font-size: 1.1em;
+}
+
+.offcanvas .accordion-item,
+.offcanvas .accordion-button,
+.offcanvas .accordion-body {
+  background-color: inherit;
+  color: inherit;
+  border: none;
+}
+
+.offcanvas .accordion-button:not(.collapsed) {
+  background-color: inherit;
+  color: inherit;
+}
+
+.offcanvas .accordion-button::after {
+  filter: invert(1);
+}
+
+.offcanvas .btn-close {
+  filter: invert(1);
+  opacity: 1;
+}
+
+.button {
+  display: block;
+  margin-left: 1rem;
+  background-color: white;
+  color: rgb(35, 76, 106);
+  border: white;
+}
+.button:hover {
+  background-color: rgb(80, 122, 153);
+  color: white;
+  border: white 1px solid;
+}
+.btn.button:active{
+    background-color:rgb(35, 76, 106);
+  color: white;
+  border: white 1px solid;
+  opacity: 0.7;
+}

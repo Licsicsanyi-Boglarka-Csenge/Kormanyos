@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
-import { Accordion, Container, Navbar, Offcanvas } from "react-bootstrap";
+import {
+  Accordion,
+  Button,
+  Container,
+  Navbar,
+  Offcanvas,
+} from "react-bootstrap";
 import type { Project } from "../types/project";
 import { useLocation, useNavigate } from "react-router-dom";
 import apiClient from "../api/apiClient";
 import { jwtDecode } from "jwt-decode";
+import "./navbar.css";
+import { toast } from "react-toastify";
 
 export const Navb = () => {
   const location = useLocation();
@@ -22,18 +30,23 @@ export const Navb = () => {
     apiClient
       .get("/projects/owner")
       .then((response) => setProjects(response.data))
-      .catch((result) => console.error(result));
+      .catch(() => toast.error("Nem sikerült a projektek betöltése!"));
   }, []);
 
   return (
     <>
-      <Navbar expand="sm, lg" className="bg-body-tertiary mt-0">
-        <Container>
+      <Navbar expand="sm, lg" className=" navbar-dark navbar">
+        <Container className="px-3 d-flex align-items-center">
           <Navbar.Toggle
             aria-controls="basic-navbar-nav"
             onClick={() => setShow(true)}
+            className="me-3"
           />
-          <Navbar.Brand>Profil</Navbar.Brand>
+          <Navbar.Brand className="ms-auto d-flex align-items-center">
+            <Button className="button" onClick={() => navigate("/")}>
+              Kijelentkezés
+            </Button>
+          </Navbar.Brand>
         </Container>
       </Navbar>
 
@@ -47,10 +60,11 @@ export const Navb = () => {
               navigate(`/home/${user_id}`);
               setShow(false);
             }}
+            className="ms-3 "
           >
             Feladatok
           </p>
-          <Accordion>
+          <Accordion className="accordion">
             <Accordion.Item eventKey="0">
               <Accordion.Header>Projectek</Accordion.Header>
               <Accordion.Body>
@@ -73,9 +87,9 @@ export const Navb = () => {
               </Accordion.Body>
             </Accordion.Item>
           </Accordion>
-          <button className="mt-3" onClick={() => navigate("/add-project")}>
+          <Button className="button" onClick={() => navigate("/add-project")}>
             Projekt létrehozása
-          </button>
+          </Button>
         </Offcanvas.Body>
       </Offcanvas>
     </>

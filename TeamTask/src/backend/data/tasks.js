@@ -54,5 +54,8 @@ export const updateTask = (
     )
     .run(project_id, assignee_id, title, description, status, due_date, id);
 
+export const updateStatus = (id, status) =>
+  db.prepare("UPDATE tasks SET status = ? WHERE id = ?").run(status, id);
+
 export const deleteTask = (id) =>
   db.prepare("DELETE FROM tasks WHERE id = ?").run(id);

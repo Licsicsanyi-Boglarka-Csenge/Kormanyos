@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import apiClient from "../api/apiClient";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Task } from "../types/task";
+import "./AddTask.css"
+import { toast } from "react-toastify";
 
 const AddTask = () => {
   const navigate = useNavigate();
-  const { name, id } = useParams();
+  const { id } = useParams();
   const [validated, setValidated] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -39,21 +41,19 @@ const AddTask = () => {
 
             apiClient
               .post("/tasks", task)
-              .then((res) => {
-                alert(res.status);
+              .then(() => {
+                toast.success("A feladatot sikekeresen hozzáadtad!")
               })
-              .catch((error) => {
-                console.error(error);
-                alert("Hiba történt a feladat hozzáadása során.");
+              .catch(() => {
+                toast.error("Hiba történt a feladat hozzáadása során.");
               });
           }
         } else {
-          alert("Nem található ilyen felhasználó!");
+          toast.error("Nem található ilyen felhasználó!");
         }
       })
-      .catch((error) => {
-        console.error(error);
-        alert("Hiba történt a felhasználó keresése során.");
+      .catch(() => {
+        toast.error("Hiba történt a felhasználó keresése során.");
       });
   };
 
@@ -132,10 +132,18 @@ const AddTask = () => {
           </Form.Group>
         </Row>
 
-        <Button type="submit">Feladat hozzáadása</Button>
-        <Button onClick={() => navigate(`/project/${name}/${id}`)}>
-          Vissza a projekthez
-        </Button>
+        <Row className="g-3">
+          <Col sx="auto">
+            <Button className="button add-button w-100" onClick={() => navigate(-1)}>
+              Vissza 
+            </Button>
+          </Col>
+          <Col sx="auto">
+            <Button type="submit" className="button add-button w-100">
+              Hozzáadás
+            </Button>
+          </Col>
+        </Row>
       </Form>
     </>
   );

@@ -4,6 +4,8 @@ import apiClient from "./api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { emailValidation, passwordValidation } from "./components/validation";
 import type { User } from "./types/user";
+import { Form, Button, Row, Col } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 function App() {
   const navigate = useNavigate();
@@ -11,8 +13,10 @@ function App() {
   const [password, setPassword] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [passwordError, setPasswordError] = useState<string>("");
+  const [validated, setValidated] = useState<boolean>(false);
 
-  const onSubmit = () => {
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setEmailError(emailValidation(email));
     setPasswordError(passwordValidation(password));
     if (emailError || passwordError) {
@@ -30,43 +34,69 @@ function App() {
         const token = response.data.token;
         const user_id = response.data.user_id;
         if (!token || !user_id) {
-          alert("Hiba a bejelentkezés során!");
+          toast.error("Hiba történt a bejelentkezés során!");
           return;
         }
-        // alert(token);
         sessionStorage.setItem("token", token);
         navigate(`/home/${Number(user_id)}`);
       })
-      .catch((result) => console.error(result));
+      .catch(() => toast.error("Hiba történt a bejelentkezés során!"));
   };
 
   return (
-    <>
-      <div>
-        <button onClick={() => navigate("register")}>Regisztráció</button>
-        <h1>Bejelentkezés</h1>
-        <label htmlFor="email">Email:</label>
-        <input
-          name="email"
-          type="email"
-          placeholder="exemple@exemple.com"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <p>{emailError}</p>
-        <br />
+    <Form noValidate validated={validated} onSubmit={onSubmit}>
+      <Row className="me-3">
+        <Button
+          className="button reg-button w-100  mb-3"
+          onClick={() => navigate("/register")}
+        >
+          Regisztráció
+        </Button>
+      </Row>
 
-        <label htmlFor="password">Jelszó</label>
-        <input
-          name="password"
-          type="text"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <p>{passwordError}</p>
-        <br />
+      <h1 className="mb-4 text-center">Bejelentkezés</h1>
 
-        <button onClick={onSubmit}>Bejelentkezés</button>
-      </div>
-    </>
+      <Row>
+        <Form.Group className="mb-3">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Írja be az email címét"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError(emailValidation(e.target.value));
+            }}
+            isInvalid={!!emailError}
+          />
+          <Form.Control.Feedback type="invalid">
+            {emailError}
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Row>
+
+      <Row>
+        <Form.Group className="mb-3">
+          <Form.Label>Jelszó</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Írja be a jelszót"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+            isInvalid={!!passwordError}
+          />
+          <Form.Control.Feedback type="invalid">
+            {passwordError}
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Row>
+
+      <Button type="submit" className="button mx-auto mt-3">
+        Belépés
+      </Button>
+    </Form>
   );
 }
 

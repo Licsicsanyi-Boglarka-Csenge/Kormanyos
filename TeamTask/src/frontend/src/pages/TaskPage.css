@@ -1,0 +1,34 @@
+form{
+    width: 90%;
+    margin: auto;
+}
+
+table td,
+th {
+  padding: 0.5em 0.5em;
+  vertical-align: middle;
+  line-height: 1.2;
+}
+
+.form-control,
+.form-select {
+  text-align: center;
+}
+
+#textarea {
+  text-align: justify;
+  max-height: 70vh;
+  height: 60vh;
+  overflow-y: auto;
+  resize: vertical;
+  width: 100%;
+}
+
+.task-button {
+  width: 85%;
+  max-width: 1100px;
+  margin: 0 auto;            
+  display: flex;
+  justify-content: center;   
+  gap: 2rem;                 
+}
