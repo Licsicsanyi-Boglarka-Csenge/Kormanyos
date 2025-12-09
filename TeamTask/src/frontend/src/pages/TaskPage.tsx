@@ -7,6 +7,7 @@ import type { User } from "../types/user";
 import type { Project } from "../types/project";
 import { jwtDecode } from "jwt-decode";
 import "./TaskPage.css";
+import { toast } from "react-toastify";
 
 const TaskPage = () => {
   const navigate = useNavigate();
@@ -108,7 +109,6 @@ const TaskPage = () => {
       !status ||
       !dueDate
     ) {
-      alert("Minden mező kitöltése kötelező!");
       return;
     }
 
@@ -116,7 +116,7 @@ const TaskPage = () => {
       .post("/users/search", { email: assigneeEmail })
       .then((res) => {
         if (!res.data?.id) {
-          alert("Nem található ilyen felhasználó!");
+          toast.error("Nem található ilyen felhasználó!");
           return;
         }
 
@@ -132,29 +132,23 @@ const TaskPage = () => {
         apiClient
           .put(`/tasks/${id}`, task)
           .then(() => {
-            alert("Feladat sikeresen frissítve.");
+            toast.success("Feladat sikeresen frissítve.");
             navigate(0);
           })
           .catch((err) => {
-            console.error("Task update error:", err);
-            alert(
-              `Hiba történt a feladat frissítése során: ${
-                err.response?.data?.message || "Ismeretlen hiba"
-              }`
-            );
+            toast.error("Hiba történt a feladat frissítése során.");
           });
       })
-      .catch((err) => {
-        console.error("User search error:", err);
-        alert("Hiba történt a felhasználó keresése során.");
+      .catch(() => {
+        toast.error("Hiba történt a felhasználó keresése során.");
       });
   };
 
   const deleteTask = () => {
     apiClient
       .delete(`/tasks/${id}`)
-      .then((res) => {
-        alert(res.status);
+      .then(() => {
+        toast.success("A feladat törlése sikeres volt!");
         navigate(`/project/${projectId}`);
       })
       .catch((err) => console.error(err));
@@ -163,94 +157,93 @@ const TaskPage = () => {
   return (
     <>
       <Row>
-          <Form
-            noValidate
-            validated={validated}
-            onSubmit={editTask}
-          >
-            <Table className="mt-2">
-              <thead>
-                <tr>
-                  <th>Projekt neve</th>
-                  <td colSpan={2}>{project?.name}</td>
-                </tr>
-                <tr>
-                  <th>Project vezetője</th>
-                  <td>{owner?.name}</td>
-                  <td>{owner?.email}</td>
-                </tr>
-                <tr>
-                  <th>Feladat elvégzője</th>
-                  <td>{assigneeName}</td>
-                  <td>
+        <Form noValidate validated={validated} onSubmit={editTask}>
+          <Table className="mt-2">
+            <thead>
+              <tr>
+                <th>Projekt neve</th>
+                <td colSpan={2}>{project?.name}</td>
+              </tr>
+              <tr>
+                <th>Project vezetője</th>
+                <td>{owner?.name}</td>
+                <td>{owner?.email}</td>
+              </tr>
+              <tr>
+                <th>Feladat elvégzője</th>
+                <td>{assigneeName}</td>
+                <td>
+                  <Form.Control
+                    type="text"
+                    style={{ textAlign: "center", ...inputStyle }}
+                    value={assigneeEmail}
+                    onChange={(e) => setAssigneeEmail(e.target.value)}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <th>Státusz</th>
+                <td colSpan={2}>
+                  <Form.Select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="todo">Todo</option>
+                    <option value="inprogress">In progress</option>
+                    <option value="completed">Completed</option>
+                  </Form.Select>
+                </td>
+              </tr>
+              <tr>
+                <th>Határidő</th>
+                <td colSpan={2}>
+                  <Form.Control
+                    type="date"
+                    style={{ ...inputStyle }}
+                    value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
+                    onChange={(e) => setDueDate(new Date(e.target.value))}
+                  />
+                </td>
+              </tr>
+            </thead>
+          </Table>
+
+          <Table className="mt-4">
+            <tbody>
+              <tr>
+                <th colSpan={3}>
+                  <h1>
                     <Form.Control
                       type="text"
-                      style={{ textAlign: "center", ...inputStyle }}
-                      value={assigneeEmail}
-                      onChange={(e) => setAssigneeEmail(e.target.value)}
+                      style={{ fontWeight: "bold", ...inputStyle }}
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
                     />
-                  </td>
-                </tr>
-                <tr>
-                  <th>Státusz</th>
-                  <td colSpan={2}>
-                    <Form.Select
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                    >
-                      <option value="todo">Todo</option>
-                      <option value="inprogress">In progress</option>
-                      <option value="completed">Completed</option>
-                    </Form.Select>
-                  </td>
-                </tr>
-                <tr>
-                  <th>Határidő</th>
-                  <td colSpan={2}>
-                    <Form.Control
-                      type="date"
-                      style={{ ...inputStyle }}
-                      value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
-                      onChange={(e) => setDueDate(new Date(e.target.value))}
-                    />
-                  </td>
-                </tr>
-              </thead>
-            </Table>
-
-            <Table className="mt-4">
-              <tbody>
-                <tr>
-                  <th colSpan={3}>
-                    <h1>
-                      <Form.Control
-                        type="text"
-                        style={{ fontWeight: "bold", ...inputStyle }}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                      />
-                    </h1>
-                  </th>
-                </tr>
-                <tr>
-                  <td colSpan={3}>
-                    <Form.Control
-                      id="textarea"
-                      as="textarea"
-                      style={{ ...inputStyle }}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </Table>
-          </Form>
+                  </h1>
+                </th>
+              </tr>
+              <tr>
+                <td colSpan={3}>
+                  <Form.Control
+                    id="textarea"
+                    as="textarea"
+                    style={{ ...inputStyle }}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </Form>
       </Row>
 
       <Row className="g-3">
         <Col sx="auto">
-          <Button onClick={() => navigate(-1)} className="button task-button w-100 ">
+          <Button
+            onClick={() => navigate(-1)}
+            className="button task-button w-100 "
+          >
             Vissza
           </Button>
         </Col>
